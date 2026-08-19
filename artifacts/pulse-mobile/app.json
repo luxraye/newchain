@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Pulse",
+    "slug": "pulse-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "pulse-mobile",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#030508"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "bw.bloodchain.pulse"
+    },
+    "android": {
+      "package": "bw.bloodchain.pulse"
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://replit.com/"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "apiBaseUrl": "https://api-server.bloodchain.replit.app",
+      "eas": {
+        "projectId": "22f1989c-21bb-4f33-9ba7-b19f486e1ff4"
+      }
+    },
+    "owner": "tayliths-team"
+  }
+}

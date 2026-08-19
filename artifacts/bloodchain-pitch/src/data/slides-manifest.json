@@ -1,0 +1,82 @@
+[
+  {
+    "id": "bc000001-0000-4000-8000-000000000001",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide1.tsx",
+    "title": "BLOODCHAIN",
+    "description": "Title slide — national sovereign infrastructure for blood supply",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000002",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide2.tsx",
+    "title": "THE PROBLEM",
+    "description": "Five core failures of the current fragmented blood supply system",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000003",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide3.tsx",
+    "title": "THE SOLUTION",
+    "description": "Cryptographic ledger tracking every unit from donor to transfusion",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000004",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide4.tsx",
+    "title": "SYSTEM ARCHITECTURE",
+    "description": "Five integrated components: Pulse, Sanctum, Vigil, Torrent, Strand",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000005",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide5.tsx",
+    "title": "LIVE SYSTEM METRICS",
+    "description": "798 units tracked, 7 facilities, 30 alerts — operational today",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000006",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide6.tsx",
+    "title": "TECHNICAL SPECIFICATIONS",
+    "description": "Full stack, auth, ledger, API, deployment, and ID formats",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000007",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide7.tsx",
+    "title": "DEPLOYMENT ROADMAP",
+    "description": "Phase I Foundation (Q3 2026), Phase II National (Q1 2027), Phase III Regional (Q4 2027)",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000008",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide8.tsx",
+    "title": "THE TEAM",
+    "description": "Gift Jr Nakedi — Founder & Lead Developer",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000009",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide9.tsx",
+    "title": "THE PARTNERSHIP",
+    "description": "Seeking Ministry, hospital partners, investors, and technology partners",
+    "speakerNotes": ""
+  },
+  {
+    "id": "bc000001-0000-4000-8000-000000000010",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10.tsx",
+    "title": "INITIATE BUILD",
+    "description": "Closing CTA — Bloodchain is live, let's deploy it together",
+    "speakerNotes": ""
+  }
+]

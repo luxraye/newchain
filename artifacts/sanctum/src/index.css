@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-display: 'Space Grotesk', sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --background: 220 40% 4%;
+  --foreground: 180 10% 90%;
+
+  --border: 220 40% 12%;
+  --input: 220 40% 12%;
+  --ring: 180 100% 40%;
+
+  --card: 220 40% 6%;
+  --card-foreground: 180 10% 90%;
+  --card-border: 220 40% 12%;
+
+  --popover: 220 40% 6%;
+  --popover-foreground: 180 10% 90%;
+  --popover-border: 220 40% 12%;
+
+  --primary: 348 83% 47%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 180 100% 40%;
+  --secondary-foreground: 220 40% 4%;
+
+  --muted: 220 40% 12%;
+  --muted-foreground: 180 10% 60%;
+
+  --accent: 38 92% 50%;
+  --accent-foreground: 220 40% 4%;
+
+  --destructive: 348 83% 47%;
+  --destructive-foreground: 0 0% 100%;
+
+  --radius: 0px;
+}
+
+.dark {
+  --background: 220 40% 4%;
+  --foreground: 180 10% 90%;
+  --border: 220 40% 16%;
+  --input: 220 40% 16%;
+  --ring: 180 100% 40%;
+  --card: 220 40% 6%;
+  --card-foreground: 180 10% 90%;
+  --card-border: 220 40% 16%;
+  --popover: 220 40% 6%;
+  --popover-foreground: 180 10% 90%;
+  --popover-border: 220 40% 16%;
+  --primary: 348 83% 47%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 180 100% 40%;
+  --secondary-foreground: 220 40% 4%;
+  --muted: 220 40% 12%;
+  --muted-foreground: 180 10% 60%;
+  --accent: 38 92% 50%;
+  --accent-foreground: 220 40% 4%;
+  --destructive: 348 83% 47%;
+  --destructive-foreground: 0 0% 100%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight;
+  }
+  
+  /* Scrollbar for technical feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+/* Scanline / CRT effect overlay */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgba(255,255,255,0) 50%,
+    rgba(0,0,0,0.1) 50%,
+    rgba(0,0,0,0.1)
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.15;
+}
+
+/* Glass panel specific to terminal */
+.terminal-panel {
+  background-color: rgba(9, 13, 20, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 212, 255, 0.1);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.data-grid-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.data-grid-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background-color: currentColor;
+  opacity: 0.5;
+}

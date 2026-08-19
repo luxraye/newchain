@@ -1,0 +1,791 @@
+openapi: 3.0.3
+info:
+  title: Api
+  version: 1.0.0
+  description: Bloodchain Platform API — Strand ledger + Torrent routing engine
+
+servers:
+  - url: /api
+
+paths:
+
+  # ── Health ────────────────────────────────────────────────────────────────
+
+  /health:
+    get:
+      operationId: getHealth
+      summary: API health check
+      tags: [Health]
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  # ── Donors ────────────────────────────────────────────────────────────────
+
+  /donors:
+    get:
+      operationId: getDonors
+      summary: List all donors
+      tags: [Donors]
+      parameters:
+        - name: district
+          in: query
+          schema: { type: string }
+        - name: bloodType
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of donors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: number }
+                  donors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Donor'
+    post:
+      operationId: registerDonor
+      summary: Register a new donor
+      tags: [Donors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDonorInput'
+      responses:
+        '201':
+          description: Donor registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Donor'
+
+  /donors/{donorId}:
+    get:
+      operationId: getDonor
+      summary: Get donor by ID
+      tags: [Donors]
+      parameters:
+        - name: donorId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Donor record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Donor'
+        '404':
+          description: Donor not found
+
+  # ── Blood Units ────────────────────────────────────────────────────────────
+
+  /units:
+    get:
+      operationId: getUnits
+      summary: List blood units
+      tags: [Units]
+      parameters:
+        - name: donorId
+          in: query
+          schema: { type: string }
+        - name: facilityId
+          in: query
+          schema: { type: string }
+        - name: bloodType
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of blood units
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: number }
+                  units:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BloodUnit'
+    post:
+      operationId: logBloodUnit
+      summary: Log a new blood unit
+      tags: [Units]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogUnitInput'
+      responses:
+        '201':
+          description: Unit logged and on-chain hash generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BloodUnit'
+
+  /units/{unitId}:
+    get:
+      operationId: getUnit
+      summary: Get blood unit by ID
+      tags: [Units]
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Blood unit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BloodUnit'
+        '404':
+          description: Unit not found
+
+  # ── Crucible Laboratory Processing ────────────────────────────────────────
+
+  /lab/worklist:
+    get:
+      operationId: getLabWorklist
+      summary: List blood units in the laboratory processing workflow
+      tags: [Laboratory]
+      parameters:
+        - name: facilityId
+          in: query
+          schema: { type: string }
+        - name: bloodType
+          in: query
+          schema: { type: string }
+        - name: stage
+          in: query
+          schema: { type: string, enum: [awaiting_tests, processing, quarantine, released, discarded] }
+        - name: riskStatus
+          in: query
+          schema: { type: string, enum: [clear, review, reactive, pending] }
+        - name: search
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Filtered laboratory worklist
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, items]
+                properties:
+                  count: { type: number }
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabWorklistItem'
+
+  /lab/units/{unitId}:
+    get:
+      operationId: getLabUnitDetail
+      summary: Get the complete processing record for a blood unit
+      tags: [Laboratory]
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Complete laboratory processing record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabUnitDetail'
+        '404':
+          description: Laboratory unit not found
+
+  /lab/units/{unitId}/screening:
+    post:
+      operationId: submitLabScreening
+      summary: Record typing and infectious disease screening results
+      tags: [Laboratory]
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabScreeningInput'
+      responses:
+        '200':
+          description: Updated laboratory unit record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabUnitDetail'
+        '400':
+          description: Invalid or incomplete screening result
+        '404':
+          description: Laboratory unit not found
+
+  /lab/units/{unitId}/components:
+    post:
+      operationId: separateLabComponents
+      summary: Record component separation products for a blood unit
+      tags: [Laboratory]
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabComponentSeparationInput'
+      responses:
+        '200':
+          description: Updated laboratory unit record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabUnitDetail'
+        '400':
+          description: Invalid component separation record
+        '404':
+          description: Laboratory unit not found
+
+  /lab/units/{unitId}/transition:
+    post:
+      operationId: transitionLabUnit
+      summary: Move a laboratory unit to processing, quarantine, release, or discard
+      tags: [Laboratory]
+      parameters:
+        - name: unitId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabTransitionInput'
+      responses:
+        '200':
+          description: Updated laboratory unit record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabUnitDetail'
+        '400':
+          description: Invalid state transition
+        '404':
+          description: Laboratory unit not found
+
+  /lab/dashboard:
+    get:
+      operationId: getLabDashboard
+      summary: Get operational laboratory processing metrics
+      tags: [Laboratory]
+      parameters:
+        - name: facilityId
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Laboratory dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabDashboard'
+
+  /lab/events:
+    get:
+      operationId: getLabEvents
+      summary: Get chronological laboratory processing events
+      tags: [Laboratory]
+      parameters:
+        - name: facilityId
+          in: query
+          schema: { type: string }
+        - name: unitId
+          in: query
+          schema: { type: string }
+        - name: limit
+          in: query
+          schema: { type: number, minimum: 1, maximum: 100, default: 30 }
+      responses:
+        '200':
+          description: Laboratory event stream
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count, events]
+                properties:
+                  count: { type: number }
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LabEvent'
+
+  # ── Facilities ─────────────────────────────────────────────────────────────
+
+  /facilities:
+    get:
+      operationId: getFacilities
+      summary: List all facilities
+      tags: [Facilities]
+      parameters:
+        - name: district
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: List of facilities
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: number }
+                  facilities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Facility'
+
+  /facilities/{facilityId}:
+    get:
+      operationId: getFacility
+      summary: Get facility by ID
+      tags: [Facilities]
+      parameters:
+        - name: facilityId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Facility record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Facility'
+        '404':
+          description: Facility not found
+
+  /facilities/{facilityId}/inventory:
+    get:
+      operationId: getFacilityInventory
+      summary: Get facility blood inventory and criticals
+      tags: [Facilities]
+      parameters:
+        - name: facilityId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Facility inventory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FacilityInventory'
+
+  # ── Routing ─────────────────────────────────────────────────────────────────
+
+  /route:
+    post:
+      operationId: routeBloodRequest
+      summary: Find best source facility for a blood request
+      tags: [Routing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteRequestInput'
+      responses:
+        '200':
+          description: Routing result with scored candidates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteResult'
+
+  /route/national-shortage:
+    get:
+      operationId: getNationalShortage
+      summary: Get system-wide blood type shortage summary
+      tags: [Routing]
+      responses:
+        '200':
+          description: National shortage report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShortageRecord'
+                  generatedAt: { type: string, format: date-time }
+
+  # ── National Stats (wow endpoint) ───────────────────────────────────────────
+
+  /stats/national:
+    get:
+      operationId: getNationalStats
+      summary: Aggregate national blood grid statistics
+      tags: [Stats]
+      responses:
+        '200':
+          description: National blood grid stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NationalStats'
+
+  /stats/ledger:
+    get:
+      operationId: getLedgerStats
+      summary: Recent on-chain activity (ledger feed)
+      tags: [Stats]
+      responses:
+        '200':
+          description: Ledger activity feed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blockHeight: { type: number }
+                  recentEvents:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LedgerEvent'
+
+components:
+  schemas:
+
+    HealthStatus:
+      type: object
+      properties:
+        service: { type: string }
+        version: { type: string }
+        status: { type: string }
+        timestamp: { type: string, format: date-time }
+
+    Donor:
+      type: object
+      properties:
+        donorId: { type: string }
+        name: { type: string }
+        phone: { type: string }
+        bloodType: { type: string }
+        district: { type: string }
+        email: { type: string, nullable: true }
+        totalDonations: { type: number }
+        airtimeEarned: { type: number }
+        status: { type: string, enum: [active, deferred, ineligible] }
+        registeredAt: { type: string }
+        nextEligibleDate: { type: string, nullable: true }
+
+    RegisterDonorInput:
+      type: object
+      required: [name, phone, bloodType, district]
+      properties:
+        name: { type: string }
+        phone: { type: string }
+        bloodType: { type: string }
+        district: { type: string }
+        email: { type: string }
+        idNumber: { type: string }
+
+    BloodUnit:
+      type: object
+      properties:
+        unitId: { type: string }
+        donorId: { type: string }
+        facilityId: { type: string }
+        bloodType: { type: string }
+        status: { type: string, enum: [available, reserved, transfused, expired, discarded] }
+        collectedAt: { type: string }
+        expiresAt: { type: string }
+        temperature: { type: number, nullable: true }
+        chainHash: { type: string, nullable: true }
+
+    LogUnitInput:
+      type: object
+      required: [donorId, facilityId, bloodType]
+      properties:
+        donorId: { type: string }
+        facilityId: { type: string }
+        bloodType: { type: string }
+        collectedAt: { type: string }
+        temperature: { type: number }
+
+    LabWorklistItem:
+      type: object
+      required: [unitId, donorId, facilityId, bloodType, stage, riskStatus, screeningComplete, componentsCount, collectedAt, expiresAt, lastUpdatedAt, chainHash]
+      properties:
+        unitId: { type: string }
+        donorId: { type: string }
+        facilityId: { type: string }
+        bloodType: { type: string }
+        stage: { type: string, enum: [awaiting_tests, processing, quarantine, released, discarded] }
+        riskStatus: { type: string, enum: [clear, review, reactive, pending] }
+        screeningComplete: { type: boolean }
+        componentsCount: { type: number }
+        collectedAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        lastUpdatedAt: { type: string, format: date-time }
+        chainHash: { type: string }
+
+    LabScreening:
+      type: object
+      required: [aboGroup, rhFactor, hiv, hepatitisB, hepatitisC, malaria, syphilis, operatorName, screenedAt]
+      properties:
+        aboGroup: { type: string, enum: [O, A, B, AB] }
+        rhFactor: { type: string, enum: [positive, negative] }
+        hiv: { type: string, enum: [negative, positive, pending] }
+        hepatitisB: { type: string, enum: [negative, positive, pending] }
+        hepatitisC: { type: string, enum: [negative, positive, pending] }
+        malaria: { type: string, enum: [negative, positive, pending] }
+        syphilis: { type: string, enum: [negative, positive, pending] }
+        operatorName: { type: string }
+        notes: { type: string, nullable: true }
+        screenedAt: { type: string, format: date-time }
+
+    LabScreeningInput:
+      type: object
+      required: [aboGroup, rhFactor, hiv, hepatitisB, hepatitisC, malaria, syphilis, operatorName]
+      properties:
+        aboGroup: { type: string, enum: [O, A, B, AB] }
+        rhFactor: { type: string, enum: [positive, negative] }
+        hiv: { type: string, enum: [negative, positive, pending] }
+        hepatitisB: { type: string, enum: [negative, positive, pending] }
+        hepatitisC: { type: string, enum: [negative, positive, pending] }
+        malaria: { type: string, enum: [negative, positive, pending] }
+        syphilis: { type: string, enum: [negative, positive, pending] }
+        operatorName: { type: string, minLength: 2 }
+        notes: { type: string }
+
+    LabComponent:
+      type: object
+      required: [componentId, type, volumeMl, status, expiresAt, createdAt]
+      properties:
+        componentId: { type: string }
+        type: { type: string, enum: [red_cells, plasma, platelets] }
+        volumeMl: { type: number }
+        status: { type: string, enum: [quarantine, released, discarded] }
+        expiresAt: { type: string, format: date-time }
+        createdAt: { type: string, format: date-time }
+
+    LabComponentInput:
+      type: object
+      required: [type, volumeMl]
+      properties:
+        type: { type: string, enum: [red_cells, plasma, platelets] }
+        volumeMl: { type: number, minimum: 1 }
+
+    LabComponentSeparationInput:
+      type: object
+      required: [operatorName, components]
+      properties:
+        operatorName: { type: string, minLength: 2 }
+        components:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/LabComponentInput'
+        notes: { type: string }
+
+    LabTransitionInput:
+      type: object
+      required: [stage, operatorName]
+      properties:
+        stage: { type: string, enum: [processing, quarantine, released, discarded] }
+        operatorName: { type: string, minLength: 2 }
+        reason: { type: string }
+
+    LabEvent:
+      type: object
+      required: [eventId, unitId, facilityId, action, actor, timestamp, chainHash]
+      properties:
+        eventId: { type: string }
+        unitId: { type: string }
+        facilityId: { type: string }
+        action: { type: string }
+        actor: { type: string }
+        reason: { type: string, nullable: true }
+        timestamp: { type: string, format: date-time }
+        chainHash: { type: string }
+
+    LabUnitDetail:
+      type: object
+      required: [unitId, donorId, facilityId, bloodType, stage, riskStatus, collectedAt, expiresAt, temperature, chainHash, components, events, createdAt, updatedAt]
+      properties:
+        unitId: { type: string }
+        donorId: { type: string }
+        facilityId: { type: string }
+        bloodType: { type: string }
+        stage: { type: string, enum: [awaiting_tests, processing, quarantine, released, discarded] }
+        riskStatus: { type: string, enum: [clear, review, reactive, pending] }
+        collectedAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        temperature: { type: number, nullable: true }
+        chainHash: { type: string }
+        screening:
+          allOf:
+            - $ref: '#/components/schemas/LabScreening'
+          nullable: true
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabComponent'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabEvent'
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    LabDashboard:
+      type: object
+      required: [awaitingTests, quarantinedUnits, releasedProducts, expiringSoon, totalInProcess, stageCounts, recentEvents, generatedAt]
+      properties:
+        awaitingTests: { type: number }
+        quarantinedUnits: { type: number }
+        releasedProducts: { type: number }
+        expiringSoon: { type: number }
+        totalInProcess: { type: number }
+        stageCounts:
+          type: object
+          additionalProperties: { type: number }
+        recentEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/LabEvent'
+        generatedAt: { type: string, format: date-time }
+
+    Facility:
+      type: object
+      properties:
+        facilityId: { type: string }
+        name: { type: string }
+        district: { type: string }
+        type: { type: string }
+        status: { type: string }
+        lat: { type: number }
+        lng: { type: number }
+        inventory:
+          type: object
+          additionalProperties: { type: number }
+        thresholds:
+          type: object
+          additionalProperties: { type: number }
+
+    FacilityInventory:
+      type: object
+      properties:
+        facilityId: { type: string }
+        name: { type: string }
+        inventory:
+          type: object
+          additionalProperties: { type: number }
+        criticals:
+          type: array
+          items:
+            type: object
+            properties:
+              type: { type: string }
+              units: { type: number }
+              threshold: { type: number }
+
+    RouteRequestInput:
+      type: object
+      required: [bloodType, requestingFacilityId]
+      properties:
+        bloodType: { type: string }
+        units: { type: number }
+        requestingFacilityId: { type: string }
+        urgency: { type: string, enum: [routine, urgent, emergency] }
+
+    RouteResult:
+      type: object
+      properties:
+        bloodType: { type: string }
+        requested: { type: number }
+        urgency: { type: string }
+        candidates:
+          type: array
+          items:
+            type: object
+            properties:
+              facilityId: { type: string }
+              name: { type: string }
+              district: { type: string }
+              availableUnits: { type: number }
+              distanceKm: { type: number }
+              etaMinutes: { type: number }
+              score: { type: number }
+        alternatives: { type: array, items: { type: string } }
+        generatedAt: { type: string, format: date-time }
+
+    ShortageRecord:
+      type: object
+      properties:
+        bloodType: { type: string }
+        totalStock: { type: number }
+        totalThreshold: { type: number }
+        criticalFacilities: { type: number }
+        shortage: { type: boolean }
+
+    NationalStats:
+      type: object
+      properties:
+        totalUnitsInStock: { type: number }
+        unitsCollectedToday: { type: number }
+        facilitiesOnline: { type: number }
+        activeAlerts: { type: number }
+        totalDonors: { type: number }
+        inventoryByBloodType:
+          type: object
+          additionalProperties: { type: number }
+
+    LedgerEvent:
+      type: object
+      properties:
+        eventId: { type: string }
+        unitId: { type: string }
+        action: { type: string }
+        facilityId: { type: string }
+        facilityName: { type: string }
+        bloodType: { type: string }
+        timestamp: { type: string, format: date-time }
+        chainHash: { type: string }
