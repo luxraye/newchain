@@ -29,6 +29,8 @@ envVarGroups:
         value: "24"
       - key: PNPM_VERSION
         value: "9.15.4"
+      - key: VITE_API_URL
+        value: "https://bloodchain-api.onrender.com"
 
 services:
   # ── API Server ──────────────────────────────────────────────────────────────
