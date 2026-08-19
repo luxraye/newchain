@@ -68,7 +68,6 @@ services:
     rootDir: .
     buildCommand: >-
       pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-client-react run build &&
       BASE_PATH=/ pnpm --filter @workspace/demo run build
     staticPublishPath: artifacts/demo/dist/public
     envVars:
@@ -117,7 +116,6 @@ services:
     rootDir: .
     buildCommand: >-
       pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-client-react run build &&
       BASE_PATH=/ pnpm --filter @workspace/crucible run build
     staticPublishPath: artifacts/crucible/dist/public
     envVars:
@@ -139,7 +137,6 @@ services:
     rootDir: .
     buildCommand: >-
       pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-client-react run build &&
       BASE_PATH=/ pnpm --filter @workspace/pulse run build
     staticPublishPath: artifacts/pulse/dist/public
     envVars:
@@ -161,7 +158,6 @@ services:
     rootDir: .
     buildCommand: >-
       pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-client-react run build &&
       BASE_PATH=/ pnpm --filter @workspace/sanctum run build
     staticPublishPath: artifacts/sanctum/dist/public
     envVars:
@@ -183,7 +179,6 @@ services:
     rootDir: .
     buildCommand: >-
       pnpm install --frozen-lockfile &&
-      pnpm --filter @workspace/api-client-react run build &&
       BASE_PATH=/ pnpm --filter @workspace/vigil run build
     staticPublishPath: artifacts/vigil/dist/public
     envVars:
