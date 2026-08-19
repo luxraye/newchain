@@ -176,7 +176,7 @@ async function seed() {
       unitId: "BW-2026-008777",
       donorId: "D-2026-0892",
       facilityId: "FAC-001",
-      bloodType: "A+",
+      bloodType: "A-",
       status: "available",
       collectedAt: new Date("2026-08-09T08:45:00.000Z"),
       expiresAt: new Date("2026-09-09T08:45:00.000Z"),

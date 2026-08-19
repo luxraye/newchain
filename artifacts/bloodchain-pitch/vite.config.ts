@@ -3,8 +3,6 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
-import { sdmHmrPlugin } from './src/.sdm/sdmHmrPlugin';
-
 const port = Number(process.env.PORT ?? 3000);
 const basePath = process.env.BASE_PATH ?? '/';
 
@@ -13,9 +11,9 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    sdmHmrPlugin(),
     ...(process.env.NODE_ENV !== 'production' && process.env.REPL_ID !== undefined
       ? [
+          await import('./src/.sdm/sdmHmrPlugin').then((m) => m.sdmHmrPlugin()),
           await import('@replit/vite-plugin-cartographer').then((m) =>
             m.cartographer({ root: path.resolve(import.meta.dirname, '..') }),
           ),

@@ -33,13 +33,12 @@ ensureSequences()
   .then(() => ensureLabLedgerHeads())
   .then(() => {
     logger.info("DB schema, sequences, facilities and demo data ready");
-    app.listen(port, (err) => {
-      if (err) {
-        logger.error({ err }, "Error listening on port");
-        process.exit(1);
-      }
-
+    const server = app.listen(port, () => {
       logger.info({ port }, "Server listening");
+    });
+    server.on("error", (err) => {
+      logger.error({ err }, "Error listening on port");
+      process.exit(1);
     });
   })
   .catch((err) => {

@@ -69,7 +69,7 @@ export async function ensureSequences(): Promise<void> {
             'CREATE SEQUENCE donors_id_seq START WITH %s',
             max_val + 1
           );
-        EXCEPTION WHEN duplicate_table THEN
+        EXCEPTION WHEN duplicate_object THEN
           -- A concurrent startup created it first; our computed value is
           -- equivalent, so no further action is needed.
           NULL;
@@ -102,7 +102,7 @@ export async function ensureSequences(): Promise<void> {
             'CREATE SEQUENCE blood_units_id_seq START WITH %s',
             max_val + 1
           );
-        EXCEPTION WHEN duplicate_table THEN
+        EXCEPTION WHEN duplicate_object THEN
           NULL;
         END;
       END IF;
