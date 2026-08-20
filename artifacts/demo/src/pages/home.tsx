@@ -332,18 +332,42 @@ function RoadmapNode({ item, index, openModal }: { item: RoadmapItem; index: num
 
 function ContactForm() {
   const [form, setForm] = useState({ name: '', org: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const FOUNDER_EMAIL = 'giftjrnakedi@gmail.com';
-    const subject = encodeURIComponent(`Bloodchain Enquiry — ${form.org || form.name}`);
-    const body = encodeURIComponent(
-      `Name: ${form.name}\nOrganisation: ${form.org}\nEmail: ${form.email}\n\n${form.message}`
-    );
-    window.location.href = `mailto:${FOUNDER_EMAIL}?subject=${subject}&body=${body}`;
+    setStatus('loading');
+    
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/giftjrnakedi@gmail.com", {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: `Bloodchain Enquiry — ${form.org || form.name}`,
+          name: form.name,
+          organization: form.org,
+          email: form.email,
+          message: form.message,
+          _template: 'box'
+        })
+      });
+      
+      if (res.ok) {
+        setStatus('success');
+        setForm({ name: '', org: '', email: '', message: '' });
+        setTimeout(() => setStatus('idle'), 5000);
+      } else {
+        setStatus('error');
+      }
+    } catch (err) {
+      setStatus('error');
+    }
   };
 
   const inputClass =
@@ -355,28 +379,37 @@ function ContactForm() {
         <div>
           <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground block mb-2">Name</label>
           <input type="text" name="name" required value={form.name} onChange={handleChange}
-            placeholder="Your full name" className={inputClass} />
+            placeholder="Your full name" className={inputClass} disabled={status === 'loading'} />
         </div>
         <div>
           <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground block mb-2">Organisation</label>
           <input type="text" name="org" value={form.org} onChange={handleChange}
-            placeholder="Ministry / Hospital / Fund" className={inputClass} />
+            placeholder="Ministry / Hospital / Fund" className={inputClass} disabled={status === 'loading'} />
         </div>
       </div>
       <div>
         <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground block mb-2">Email</label>
         <input type="email" name="email" required value={form.email} onChange={handleChange}
-          placeholder="you@organisation.bw" className={inputClass} />
+          placeholder="you@organisation.bw" className={inputClass} disabled={status === 'loading'} />
       </div>
       <div>
         <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground block mb-2">Message</label>
         <textarea name="message" required value={form.message} onChange={handleChange}
           placeholder="Partnership enquiry, investment interest, deployment request..." rows={4}
-          className={`${inputClass} resize-none`} />
+          className={`${inputClass} resize-none`} disabled={status === 'loading'} />
       </div>
-      <button type="submit"
-        className="flex items-center gap-2 px-6 py-4 bg-foreground text-background font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors">
-        <Mail className="w-4 h-4" /> Send Enquiry
+      
+      {status === 'error' && (
+        <div className="text-red-500 font-mono text-xs">Failed to send message. Please try again later.</div>
+      )}
+      {status === 'success' && (
+        <div className="text-green-500 font-mono text-xs">Message sent successfully! We'll be in touch.</div>
+      )}
+      
+      <button type="submit" disabled={status === 'loading' || status === 'success'}
+        className="flex items-center gap-2 px-6 py-4 bg-foreground text-background font-mono text-sm uppercase tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50">
+        <Mail className="w-4 h-4" /> 
+        {status === 'loading' ? 'Sending...' : status === 'success' ? 'Sent' : 'Send Enquiry'}
       </button>
     </form>
   );
