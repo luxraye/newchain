@@ -35,7 +35,7 @@ export default function RegisterScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { donorId, setDonorId } = useDonor();
+  const { donorId, setDonorId, clearDonor } = useDonor();
 
   // Mode: 'register' | 'login'
   const [mode, setMode] = useState<'register' | 'login'>('register');
@@ -148,12 +148,21 @@ export default function RegisterScreen() {
         <Text
           style={[styles.registeredText, { color: colors.mutedForeground }]}
         >
-          Your donor ID is cryptographically anchored to the Strand ledger.
+          Active session: <Text style={{ color: colors.primary, fontFamily: 'Inter_700Bold' }}>{donorId}</Text>
         </Text>
         <PrimaryButton
-          title="Access Donor Dashboard"
+          title="Access My Dashboard"
           testID="go-dashboard"
           onPress={() => router.push('/(tabs)/dashboard')}
+          style={styles.registeredButton}
+        />
+        <PrimaryButton
+          title="Sign Out & Enrol New Donor"
+          variant="outline"
+          onPress={() => {
+            clearDonor();
+            setMode('register');
+          }}
           style={styles.registeredButton}
         />
       </View>

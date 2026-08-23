@@ -20,12 +20,17 @@ const OTHER_ITEMS = [
 export function DemoPanel() {
   const colors = useColors();
   const router = useRouter();
-  const { setDonorId } = useDonor();
+  const { setDonorId, clearDonor } = useDonor();
   const [expanded, setExpanded] = useState(false);
 
   function loadDemoUser(id: string) {
     setDonorId(id);
     router.push('/(tabs)/dashboard');
+  }
+
+  function resetSession() {
+    clearDonor();
+    router.push('/(tabs)/register');
   }
 
   return (
@@ -91,6 +96,26 @@ export function DemoPanel() {
                   </Text>
                 </TouchableOpacity>
               ))}
+
+              <TouchableOpacity
+                style={[
+                  styles.donorChip,
+                  {
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                    marginTop: 4,
+                  },
+                ]}
+                onPress={resetSession}
+                activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel="Sign Out or Enrol New Donor"
+              >
+                <Feather name="log-out" size={10} color={colors.destructive} />
+                <Text style={[styles.donorChipText, { color: colors.destructive }]}>
+                  Sign Out / Reset
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* Non-interactive reference items */}

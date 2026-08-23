@@ -4,6 +4,10 @@ packages:
   - lib/integrations/*
   - scripts
 
+allowBuilds:
+  dtrace-provider: true
+  esbuild: true
+
 autoInstallPeers: false
 
 catalog:

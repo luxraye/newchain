@@ -346,11 +346,48 @@ export default function DashboardScreen() {
           ))
         )}
       </View>
+
+      {/* Sign Out / Switch Donor Session */}
+      <TouchableOpacity
+        onPress={() => {
+          clearDonor();
+          router.push('/(tabs)/register');
+        }}
+        activeOpacity={0.75}
+        style={[
+          styles.signOutButton,
+          {
+            borderColor: colors.border,
+            borderRadius: colors.radius,
+            backgroundColor: colors.card,
+          },
+        ]}
+      >
+        <Feather name="log-out" size={14} color={colors.destructive} />
+        <Text style={[styles.signOutText, { color: colors.destructive }]}>
+          Sign Out / Switch Donor
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  signOutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginTop: 4,
+  },
+  signOutText: {
+    fontSize: 13,
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.5,
+  },
   content: {
     paddingHorizontal: 20,
     gap: 16,
