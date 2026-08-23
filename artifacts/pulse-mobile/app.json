@@ -27,7 +27,7 @@
       [
         "expo-router",
         {
-          "origin": "https://replit.com/"
+          "origin": "https://bloodchain.life/"
         }
       ],
       "expo-font",
@@ -38,7 +38,7 @@
       "reactCompiler": true
     },
     "extra": {
-      "apiBaseUrl": "https://api-server.bloodchain.replit.app",
+      "apiBaseUrl": "https://bloodchain-api.onrender.com",
       "eas": {
         "projectId": "22f1989c-21bb-4f33-9ba7-b19f486e1ff4"
       }

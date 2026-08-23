@@ -7,11 +7,14 @@ const router: IRouter = Router();
 
 // GET /donors
 router.get("/donors", async (req, res): Promise<void> => {
-  const { district, bloodType } = req.query as Record<string, string | undefined>;
+  const { district, bloodType, phone, idNumber, donorId } = req.query as Record<string, string | undefined>;
 
   const conditions: SQL[] = [];
   if (district) conditions.push(eq(donorsTable.district, district));
   if (bloodType) conditions.push(eq(donorsTable.bloodType, bloodType));
+  if (phone) conditions.push(eq(donorsTable.phone, phone));
+  if (idNumber) conditions.push(eq(donorsTable.idNumber, idNumber));
+  if (donorId) conditions.push(eq(donorsTable.donorId, donorId));
 
   const donors =
     conditions.length > 0
