@@ -342,7 +342,7 @@ function ContactForm() {
     setStatus('loading');
     
     try {
-      const res = await fetch("https://formsubmit.co/ajax/giftjrnakedi@gmail.com", {
+      const res = await fetch("https://formsubmit.co/ajax/gnakedi@bloodchain.life", {
         method: "POST",
         headers: { 
           'Content-Type': 'application/json',
@@ -651,14 +651,14 @@ export default function Home() {
                 <Reveal delay={0.4} className="w-full">
                   <p className="font-mono text-sm text-muted-foreground uppercase tracking-widest mb-6 md:text-right">Action</p>
                   <div className="flex flex-col gap-3 w-full">
-                    <button onClick={() => openModal('/vigil/', 'Vigil — National Dashboard')}
+                    <a href="#contact"
                       className="flex items-center justify-between px-6 py-4 bg-foreground text-background font-mono text-sm hover:bg-primary hover:text-primary-foreground transition-colors w-full group">
-                      Enter Vigil Dashboard <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                    </button>
-                    <button onClick={() => openModal('/pulse/', 'Pulse — Donor Portal')}
+                      Partner With Us <Mail className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+                    </a>
+                    <a href="#roadmap"
                       className="flex items-center justify-between px-6 py-4 border border-foreground text-foreground font-mono text-sm hover:bg-foreground hover:text-background transition-colors w-full group">
-                      Register as Donor <ExternalLink className="w-4 h-4 opacity-50 group-hover:opacity-100" />
-                    </button>
+                      View Full Roadmap <ChevronDown className="w-4 h-4 opacity-50 group-hover:opacity-100" />
+                    </a>
                   </div>
                 </Reveal>
               </div>
@@ -1237,7 +1237,7 @@ export default function Home() {
                 <div className="space-y-2 font-mono text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Mail className="w-3 h-3 text-primary" />
-                    <a href="mailto:giftjrnakedi@gmail.com" className="hover:text-foreground transition-colors">giftjrnakedi@gmail.com</a>
+                    <a href="mailto:gnakedi@bloodchain.life" className="hover:text-foreground transition-colors">gnakedi@bloodchain.life</a>
                   </div>
                   <div className="flex items-center gap-2">
                     <Map className="w-3 h-3 text-primary" />
@@ -1261,7 +1261,7 @@ export default function Home() {
                   <p>If you are a health ministry official, hospital administrator, global health funder, or technology partner — we want to hear from you.</p>
                 </div>
                 <div className="mt-10 space-y-3 font-mono text-sm text-background/60">
-                  <div className="flex items-center gap-3"><Mail className="w-4 h-4 text-primary" /> giftjrnakedi@gmail.com</div>
+                  <div className="flex items-center gap-3"><Mail className="w-4 h-4 text-primary" /> gnakedi@bloodchain.life</div>
                   <div className="flex items-center gap-3"><Map className="w-4 h-4 text-primary" /> Gaborone, Botswana</div>
                 </div>
               </Reveal>
