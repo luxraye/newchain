@@ -2,6 +2,8 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGetNationalStats } from '@workspace/api-client-react';
 import { AnimatedNumber } from '@/components/animated-number';
+import { BlockchainStats } from '@/components/BlockchainStats';
+import { LedgerFeed } from '@/components/LedgerFeed';
 import {
   Database, Network, ShieldCheck, Activity, Map, Lock,
   ExternalLink, X, Maximize2, ChevronDown, Users, Terminal,
@@ -602,6 +604,10 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <nav className="hidden md:flex items-center gap-6 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              <a href="#ledger" className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1.5 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                Ledger
+              </a>
               <a href="#roadmap" className="hover:text-foreground transition-colors">Roadmap</a>
               <a href="#platform" className="hover:text-foreground transition-colors">Platform</a>
               <a href="#team" className="hover:text-foreground transition-colors">Team</a>
@@ -699,7 +705,7 @@ export default function Home() {
                       : Object.entries(stats.inventoryByBloodType).map(([type, count]) => (
                           <div key={type} className="flex items-baseline gap-1">
                             <span className="font-bold text-foreground">{type}</span>
-                            <span className="text-muted-foreground text-sm">:{count}</span>
+                            <span className="text-muted-foreground text-sm">:{String(count)}</span>
                           </div>
                         ))}
                   </div>
@@ -715,31 +721,45 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── THE LEDGER (STRAND) ── */}
-        <section className="py-24 px-4 md:px-8 border-b border-border relative">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <Reveal>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 border border-border flex items-center justify-center bg-muted/20">
-                    <Database className="w-5 h-5 text-primary" />
+        {/* ── THE LEDGER (STRAND / HYPERLEDGER FABRIC) ── */}
+        <section id="ledger" className="py-24 px-4 md:px-8 border-b border-border bg-black/40 relative">
+          <div className="max-w-7xl mx-auto space-y-16">
+            {/* Header & Protocol Overview */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-5">
+                <Reveal>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 border border-cyan-500/30 flex items-center justify-center bg-cyan-500/10 text-cyan-400">
+                      <Database className="w-5 h-5" />
+                    </div>
+                    <span className="font-mono text-xs uppercase tracking-widest text-cyan-400 font-bold">
+                      Strand Protocol · Hyperledger Fabric
+                    </span>
                   </div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Strand Protocol</span>
-                </div>
-                <h2 className="font-heading text-4xl md:text-5xl font-bold tracking-tight mb-6">Immutable Truth.</h2>
-                <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-                  <p>Every unit of blood collected in the Republic is hashed onto the Strand ledger. From the moment of venipuncture to transfusion, the custody chain is mathematically provable and historically immutable.</p>
-                  <p>No spoilage goes unrecorded. No unauthorized transfer goes unnoticed. We have replaced trust in bureaucracy with trust in cryptography.</p>
-                </div>
-              </Reveal>
-            </div>
-            <Reveal delay={0.2} className="relative aspect-square lg:aspect-[4/3] border border-border p-4 bg-card overflow-hidden group">
-              <div className="absolute inset-0 bg-[url('/ledger-abstract.jpg')] bg-cover bg-center opacity-90 mix-blend-multiply filter grayscale group-hover:grayscale-0 group-hover:mix-blend-normal transition-all duration-1000" />
-              <div className="absolute inset-0 bg-primary/10 mix-blend-color-burn" />
-              <div className="relative z-10 w-full h-full border border-border/50 flex flex-col justify-end p-6">
-                <div className="font-mono text-xs text-background bg-foreground/90 p-2 inline-block self-start backdrop-blur-sm mb-2">TX_HASH: 0x8F9B...4C2A</div>
-                <div className="font-mono text-xs text-background bg-foreground/90 p-2 inline-block self-start backdrop-blur-sm">BLOCK_HEIGHT: <AnimatedNumber value={2459812} prefix="#" /></div>
+                  <h2 className="font-heading text-4xl md:text-5xl font-bold tracking-tight mb-6 text-white">
+                    Cryptographic Truth.
+                  </h2>
+                  <div className="space-y-4 text-base text-zinc-400 leading-relaxed">
+                    <p>
+                      Every blood donation verified across Botswana's regional referral hospitals is cryptographically anchored onto a sovereign Hyperledger Fabric ledger.
+                    </p>
+                    <p>
+                      Donor identities are protected via one-way <span className="text-zinc-200 font-mono text-sm">SHA-256</span> pseudonymization. The public audit stream below is live, unauthenticated, and permanently verifiable by hospitals, regulators, and citizens.
+                    </p>
+                  </div>
+                </Reveal>
               </div>
+
+              <div className="lg:col-span-7">
+                <Reveal delay={0.15}>
+                  <BlockchainStats />
+                </Reveal>
+              </div>
+            </div>
+
+            {/* Live Public Ledger Event Feed */}
+            <Reveal delay={0.25}>
+              <LedgerFeed />
             </Reveal>
           </div>
         </section>
